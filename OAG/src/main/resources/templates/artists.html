@@ -1,0 +1,944 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+  <meta charset="UTF-8">
+  <title>CodePen - Card Expansion Effect with SVG clipPath</title>
+  <link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css'><link rel="stylesheet" href="./style.css">
+<style>
+
+@font-face {
+	font-family: 'codropsicons';
+	font-weight: normal;
+	font-style: normal;
+	src: url('../fonts/codropsicons/codropsicons.eot');
+	src: url('../fonts/codropsicons/codropsicons.eot?#iefix') format('embedded-opentype'), url('../fonts/codropsicons/codropsicons.woff') format('woff'), url('../fonts/codropsicons/codropsicons.ttf') format('truetype'), url('../fonts/codropsicons/codropsicons.svg#codropsicons') format('svg');
+}
+
+*,
+*:after,
+*:before {
+	-webkit-box-sizing: border-box;
+	box-sizing: border-box;
+}
+
+.clearfix:before,
+.clearfix:after {
+	content: '';
+	display: table;
+}
+
+.clearfix:after {
+	clear: both;
+}
+
+body {
+	font-family: Avenir, 'Helvetica Neue', 'Lato', 'Segoe UI', Helvetica, Arial, sans-serif;
+	line-height: 1.5;
+	color: #3b393d;
+	background: #f0f0f0;
+	background-size: cover;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+	overflow: hidden;
+	overflow-y: scroll;
+}
+
+body.body--hidden {
+	overflow: hidden;
+}
+
+body.body--hidden .codrops-header,
+body.body--hidden .content--related {
+	opacity: 0;
+}
+
+.codrops-header,
+.content--related {
+	-webkit-transition: opacity 300ms ease-in-out;
+	transition: opacity 300ms ease-in-out;
+}
+
+a {
+	text-decoration: none;
+	color: #de6551;
+	outline: none;
+}
+
+a:hover,
+a:focus {
+	color: #3b393d;
+}
+
+.demo-2 a {
+	color: #7cc576;
+}
+
+.demo-3 {
+	background: #1b1b1b;
+}
+
+.demo-4 {
+	background: #acaad1;
+}
+
+.demo-4 a {
+	color: #6448a0;
+}
+
+.demo-4 .codrops-header h1 span {
+	color: #4f4c4c;
+}
+
+.hidden {
+	position: absolute;
+	overflow: hidden;
+	width: 0;
+	height: 0;
+	pointer-events: none;
+}
+/* Header */
+
+.codrops-header {
+	padding: 2em 1em;
+	text-align: center;
+}
+
+.codrops-header h1 {
+	font-size: 2.25em;
+	font-weight: 400;
+	line-height: 1.2;
+	margin: .5em 0 0;
+}
+
+.codrops-header h1 span {
+	font-size: .45em;
+	display: block;
+	padding: .5em 0 1em;
+	color: #999;
+}
+/* Top Navigation Style */
+
+.codrops-links {
+	position: relative;
+	display: inline-block;
+	text-align: center;
+	white-space: nowrap;
+}
+
+.codrops-links::after {
+	content: '';
+	position: absolute;
+	top: 0;
+	left: 50%;
+	width: 2px;
+	height: 100%;
+	margin-left: -1px;
+	background: #ddd;
+	-webkit-transform: rotate3d(0, 0, 1, 22.5deg);
+	transform: rotate3d(0, 0, 1, 22.5deg);
+}
+
+.codrops-icon {
+	display: inline-block;
+	width: 1.5em;
+	margin: .5em;
+	padding: 0em 0;
+	text-decoration: none;
+}
+
+.codrops-icon span {
+	display: none;
+}
+
+.codrops-icon:before {
+	font-family: 'codropsicons';
+	font-weight: normal;
+	font-style: normal;
+	font-variant: normal;
+	line-height: 1;
+	margin: 0 5px;
+	text-transform: none;
+	-webkit-font-smoothing: antialiased;
+
+	speak: none;
+}
+
+.codrops-icon--drop:before {
+	content: '\e001';
+}
+
+.codrops-icon--prev:before {
+	content: '\e004';
+}
+/* Demo links */
+
+.codrops-demos {
+	margin: 2em 0 0;
+}
+
+.codrops-demos a {
+	display: inline-block;
+	margin: 0 .5em;
+}
+
+.codrops-demos a.current-demo {
+	font-weight: bold;
+	color: #3b393d;
+}
+/* Content */
+
+.content {
+	padding: 1em 0 4em;
+}
+/* Related demos */
+
+.content--related {
+	font-weight: bold;
+	text-align: center;
+}
+
+.media-item {
+	display: inline-block;
+	padding: 1em;
+	vertical-align: top;
+	-webkit-transition: color .3s;
+	transition: color .3s;
+}
+
+.media-item__img {
+	max-width: 100%;
+	opacity: .3;
+	-webkit-transition: opacity .3s;
+	transition: opacity .3s;
+}
+
+.media-item:hover .media-item__img,
+.media-item:focus .media-item__img {
+	opacity: 1;
+}
+
+.media-item__title {
+	font-size: 1em;
+	margin: 0;
+	padding: .5em;
+}
+
+/* cards wrapper and close btn */
+
+.wrapper {
+	overflow: auto;
+	width: 95%;
+	max-width: 1366px;
+	margin: 0 auto;
+}
+
+@media screen and (max-width: 50em) {
+	.codrops-header {
+		padding: 3em 10% 4em;
+	}
+}
+
+@media screen and (max-width: 40em) {
+	.codrops-header h1 {
+		font-size: 2.4em;
+		line-height: 1.2;
+	}
+}
+
+/* CARD */
+
+.card {
+	position: relative;
+	float: left;
+	width: 29%;
+	height: 0;
+	margin: 2%;
+	padding-bottom: 20%;
+}
+
+.card__container {
+	position: fixed;
+	top: 0;
+	left: 0;
+	overflow-x: hidden;
+	overflow-y: auto;
+	width: 100%;
+	height: 100%;
+	-webkit-transform: translate3d(0, 0, 0);
+	/* prevents flicker */
+
+	-webkit-overflow-scrolling: touch;
+}
+
+.card__container--closed {
+	position: absolute;
+	overflow: hidden;
+}
+
+.card__image {
+	position: relative;
+	left: 50%;
+	display: block;
+	height: 100%;
+	max-height: 500px;
+	-webkit-transform: translateX(-50%);
+	-ms-transform: translateX(-50%);
+	transform: translateX(-50%);
+}
+
+.card__container--closed .card__image {
+	cursor: pointer;
+}
+
+.card__content {
+	position: relative;
+	width: 100%;
+	height: auto;
+	margin: 0 auto;
+	padding: 30px 40px 22px;
+	color: #888;
+	background: #fff;
+}
+
+.card__container--closed .card__content {
+	margin-top: 0;
+	padding: 5px 16px;
+	pointer-events: none;
+	background: transparent;
+}
+
+.card__caption {
+	font-size: 2em;
+	max-width: 900px;
+	margin: 0 auto;
+	padding: 35px 30px 0px;
+}
+
+.card__container--closed .card__caption {
+	font-size: 1em;
+	max-width: none;
+	padding: 30px 10px;
+	-webkit-transform: translateY(-100%);
+	-ms-transform: translateY(-100%);
+	transform: translateY(-100%);
+}
+
+.card__title {
+	font-size: 1.5em;
+	line-height: 1;
+	margin: 5px 0 0 0;
+	color: #3b393d;
+}
+
+.card__container--closed .card__title {
+	color: #fff;
+}
+
+.card__subtitle {
+	font-size: .95em;
+	line-height: 1;
+	margin: 5px 0 0;
+	color: #777778;
+}
+
+.card__container--closed .card__subtitle {
+	color: #f5f5f5;
+}
+
+.card__copy {
+	font-size: 1.25em;
+	max-width: 900px;
+	margin: 0 auto;
+	padding: 25px 30px 100px;
+	color: #3b393d;
+}
+
+.card__copy p:first-of-type {
+	font-size: 1.5em;
+	padding: 0 0 1em 0;
+}
+
+.card__btn-close {
+	font-size: 18px;
+	position: absolute;
+	top: 0;
+	right: 0;
+	padding: 36px;
+	cursor: pointer;
+}
+
+.card__container--closed .card__btn-close {
+	display: none;
+}
+
+.meta {
+	font-size: .85em;
+	display: -webkit-flex;
+	display: flex;
+	padding: 0 0 35px 0;
+
+	-webkit-align-items: center;
+	align-items: center;
+}
+
+.card__container--closed .meta {
+	visibility: hidden;
+}
+
+.meta__avatar {
+	border-radius: 50%;
+}
+
+.meta__author {
+	font-weight: bold;
+	padding: 0 15px;
+}
+
+.meta__date {
+	margin: 0 0 0 auto;
+}
+
+@media only screen and (max-width: 980px) {
+	.card {
+		width: 46%;
+		padding-bottom: 32.2%;
+	}
+	.card__image {
+		max-height: 360px;
+	}
+	.card__content {
+		margin-bottom: 0;
+		padding-right: 20px;
+		padding-left: 20px;
+	}
+}
+
+@media only screen and (max-width: 580px) {
+	.card {
+		width: 96%;
+		padding-bottom: 67.2%;
+	}
+}
+
+@media only screen and (max-width: 400px) {
+	.card__caption {
+		font-size: 1.25em;
+		padding: 35px 0px 0px;
+	}
+	.meta {
+		padding: 0 0 25px 0;
+	}
+	.card__copy {
+		font-size: 90%;
+		padding: 25px 0px 100px;
+	}
+}
+/* PATTERN */
+
+.pattern {
+	position: fixed;
+	z-index: -1;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+}
+
+.pattern--hidden {
+	visibility: hidden;
+	opacity: 0;
+}
+
+.pattern--hidden .polygon {
+	transition-duration: 0ms;
+}
+
+.pattern svg {
+	width: 100%;
+	height: 100%;
+}
+
+.polygon {
+	transition: -webkit-transform 300ms ease-in-out, opacity 300ms ease-in-out;
+	transition: transform 300ms ease-in-out, opacity 300ms ease-in-out;
+	-webkit-transform: scale(1);
+	transform: scale(1);
+	-webkit-transform-origin: center bottom;
+	transform-origin: center bottom;
+	fill: transparent;
+}
+
+.polygon--hidden {
+	opacity: 0;
+	-webkit-transform: scale(0);
+	transform: scale(0);
+}
+/* disable scale on firefox */
+
+.ff .polygon {
+	-webkit-transform: scale(1)!important;
+	transform: scale(1)!important;
+}
+</style>
+</head>
+<body>
+<!-- partial:index.partial.html -->
+<div class="content">
+			<!-- trianglify pattern container -->
+			<div class="pattern pattern--hidden"></div>
+			<!-- cards -->
+			<div class="wrapper">
+				<div class="card">
+					<div class="card__container card__container--closed">
+						<svg class="card__image" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 1920 500" preserveAspectRatio="xMidYMid slice">
+							<defs>
+								<clipPath id="clipPath1">
+									<!-- r = 992 = hyp = Math.sqrt(960*960+250*250) -->
+									<circle class="clip" cx="960" cy="250" r="992"></circle>
+								</clipPath>
+							</defs>
+							<image clip-path="url(#clipPath1)" width="1920" height="500" xlink:href="https://wallpapers.com/images/high/leonardo-da-vinci-last-supper-art-5oysm36fej73wugz.webp"></image>
+						</svg>
+						<div class="card__content">
+							<i class="card__btn-close fa fa-times"></i>
+							<div class="card__caption">
+								<h2 class="card__title">Leonardo da Vinci </h2>
+						
+							</div>
+							<div class="card__copy">
+								<div class="meta">
+									<img class="meta__avatar" src="https://tympanus.net/Development/CardExpansion/img/authors/1.png" alt="author01" />
+									<span class="meta__author">Leonardo da Vinci </span>
+									
+								</div>
+								<p>Leonardo da Vinci (1452-1519) was a renowned Italian polymath, excelling in various fields such as art, science, engineering, anatomy, and architecture.</p>
+								<p>He is best known for iconic artworks like the Mona Lisa and The Last Supper, showcasing his exceptional skill and innovation in the realm of painting and drawing during the Italian Renaissance.</p>
+								<p>Da Vinci made significant contributions to anatomy, physics, and engineering, often ahead of his time. He sketched innovative machines and designed concepts like flying machines and war weapons, illustrating his deep understanding of scientific principles.</p>
+								<p>Throughout his life, Leonardo kept extensive notebooks filled with sketches, observations, and ideas, reflecting his insatiable curiosity and analytical approach to the natural world.</p>
+								<p> Leonardo da Vinci's influence continues to resonate across art, science, and culture, making him a revered figure in both historical and contemporary contexts, inspiring countless artists and thinkers worldwide.</p>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="card">
+					<div class="card__container card__container--closed">
+						<svg class="card__image" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 1920 500" preserveAspectRatio="xMidYMid slice">
+							<defs>
+								<clipPath id="clipPath2">
+									<!-- r = 992 = hyp = Math.sqrt(960*960+250*250) -->
+									<circle class="clip" cx="960" cy="250" r="992"></circle>
+								</clipPath>
+							</defs>
+							<image clip-path="url(#clipPath2)" width="1920" height="500" xlink:href="https://www.holland.com/upload_mm/2/c/e/68950_fullimage_vangogh-portert-1360_1360x430_0.jpg"></image>
+						</svg>
+						<div class="card__content">
+							<i class="card__btn-close fa fa-times"></i>
+							<div class="card__caption">
+								<h2 class="card__title">Vincent van Gogh</h2>
+	
+							</div>
+							<div class="card__copy">
+								<div class="meta">
+									<img class="meta__avatar" src="https://tympanus.net/Development/CardExpansion/img/authors/2.png" alt="author02" />
+									<span class="meta__author">Vincent van Gogh </span>
+								
+								</div>
+								<p>Vincent van Gogh (1853-1890) was a Dutch post-impressionist painter known for his emotionally charged and colorful works of art. He is celebrated for his unique style and technique, characterized by bold brushstrokes and vivid use of color. Despite struggling with mental health issues throughout his life, van Gogh created over 2,000 artworks, including renowned pieces such as "Starry Night" and "Sunflowers." His work continues to inspire and captivate art enthusiasts around the world, leaving a lasting legacy in the realm of modern art.</p>
+								<p>His artistry had a significant influence on 20th-century art movements, and he remains an iconic figure in the art world.</p>
+								<p>Van Gogh's unique approach to color, brushwork, and emotion set him apart from his contemporaries, making a profound impact on the development of modern art. His tragic life story, which includes periods of intense creativity and struggle, adds a layer of complexity to the understanding of his work.</p>
+								<p>Stock infrastructure seed round sales paradigm shift technology user experience focus gamification. Partnership metrics business plan stealth business-to-business. Deployment graphical user interface monetization. Twitter incubator scrum project entrepreneur branding burn rate ramen backing paradigm shift virality crowdsource.</p>
+								<p>Despite facing numerous challenges, van Gogh's dedication to his craft and relentless pursuit of artistic expression have made him a legendary figure in the art world, leaving an indelible mark on art history.</p>
+								<p>Despite facing numerous challenges, van Gogh's dedication to his craft and relentless pursuit of artistic expression have made him a legendary figure in the art world, leaving an indelible mark on art history.</p>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="card">
+					<div class="card__container card__container--closed">
+						<svg class="card__image" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 1920 500" preserveAspectRatio="xMidYMid slice">
+							<defs>
+								<clipPath id="clipPath3">
+									<!-- r = 992 = hyp = Math.sqrt(960*960+250*250) -->
+									<circle class="clip" cx="960" cy="250" r="992"></circle>
+								</clipPath>
+							</defs>
+							<image clip-path="url(#clipPath3)" width="1920" height="500" xlink:href="https://assets.editorial.aetnd.com/uploads/2012/05/this-day-in-history-10-25-1881-pablo-picasso-born.jpg"></image>
+						</svg>
+						<div class="card__content">
+							<i class="card__btn-close fa fa-times"></i>
+							<div class="card__caption">
+								<h2 class="card__title">Pablo Picasso</h2>
+								
+							</div>
+							<div class="card__copy">
+								<div class="meta">
+									<img class="meta__avatar" src="https://tympanus.net/Development/CardExpansion/img/authors/3.png" alt="author03" />
+									<span class="meta__author">Pablo Picasso</span>
+								
+								</div>
+								<p>Picasso's artistic genius was not limited to painting; he also made significant contributions to sculpture, ceramics, printmaking, and stage design. His ability to constantly experiment and reinvent his style showcased his immense talent and made him a central figure in the art world.</p>
+								<p>Throughout his lifetime, Picasso produced an astonishing 50,000 artworks, which include iconic pieces like "Guernica" and "Les Demoiselles d'Avignon." His groundbreaking and boundary-pushing creations continue to be celebrated, studied, and revered by art enthusiasts and scholars worldwide, solidifying his status as a true artistic legend.</p>
+								<p>With an unparalleled ability to blend traditional artistic techniques with revolutionary innovation, Picasso's work remains timeless and continues to resonate with audiences, inspiring contemporary artists to this day. His profound influence on art and culture has left an enduring legacy, making him one of the most important artists of the 20th century.</p>
+								<p>Stock infrastructure seed round sales paradigm shift technology user experience focus gamification. Partnership metrics business plan stealth business-to-business. Deployment graphical user interface monetization. Twitter incubator scrum project entrepreneur branding burn rate ramen backing paradigm shift virality crowdsource.</p>
+								<p>Picasso's mastery of art was marked by constant reinvention and exploration, evident in his diverse body of work, ranging from classical to abstract. His ability to capture the essence of the human form and society in various art movements makes him a cornerstone of modern art history.</p>
+								<p>Known for his revolutionary artistic vision, Picasso pushed the boundaries of artistic expression, challenging conventional norms and inspiring artists to think beyond the conventional. His avant-garde spirit and constant evolution set a new standard in the art world, leaving an indelible mark on generations to come.</p>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="card">
+					<div class="card__container card__container--closed">
+						<svg class="card__image" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 1920 500" preserveAspectRatio="xMidYMid slice">
+							<defs>
+								<clipPath id="clipPath4">
+									<!-- r = 992 = hyp = Math.sqrt(960*960+250*250) -->
+									<circle class="clip" cx="960" cy="250" r="992"></circle>
+								</clipPath>
+							</defs>
+							<image clip-path="url(#clipPath4)" width="1920" height="500" xlink:href="https://www.whatalifetours.com/wp-content/uploads/2020/02/portrait-michelangelo-buonarroti.jpg"></image>
+						</svg>
+						<div class="card__content">
+							<i class="card__btn-close fa fa-times"></i>
+							<div class="card__caption">
+								<h2 class="card__title">Michelangelo Buonarrot</h2>
+
+							</div>
+							<div class="card__copy">
+								<div class="meta">
+									<img class="meta__avatar" src="https://tympanus.net/Development/CardExpansion/img/authors/4.png" alt="author04" />
+									<span class="meta__author">Michelangelo Buonarrot</span>
+									
+								</div>
+								<p>Michelangelo's artistic prowess was not confined to a single medium; he excelled in sculpture, painting, and architecture. His monumental sculptures, including the breathtaking Pieta and the awe-inspiring David, showcase his extraordinary ability to bring stone to life. In painting, the Sistine Chapel ceiling stands as a testament to his genius, displaying a fusion of skill, creativity, and deep religious themes. Michelangelo's work epitomizes the ideals of the Renaissance and his dedication to perfection and classical aesthetics continues to be an inspiration for artists and art enthusiasts alike.</p>
+								<p>Release creative social proof influencer iPad crowdsource gamification learning curve network effects monetization. Gamification business plan mass market www.discoverartisans.com direct mailing ecosystem seed round sales long tail vesting period.</p>
+								<p>Michelangelo's creative brilliance extended beyond the realm of art and sculpture. His architectural achievements, such as the design of St. Peter's Basilica in the Vatican, demonstrate his diverse talents and vision for harmonizing form and function. His artistic legacy, deeply rooted in the Renaissance, is characterized by a profound understanding of human anatomy, unmatched attention to detail, and a fervent dedication to excellence, leaving an everlasting impact on the world of art and architecture.</p>
+								<p>Stock infrastructure seed round sales paradigm shift technology user experience focus gamification. Partnership metrics business plan stealth business-to-business. Deployment graphical user interface monetization. Twitter incubator scrum project entrepreneur branding burn rate ramen backing paradigm shift virality crowdsource.</p>
+								<p>Michelangelo's work is a testament to his lifelong quest for perfection and beauty. His ability to breathe life and emotion into marble and paint has left an indelible mark on art history. His masterpieces not only reflect his artistic talent but also his deep spirituality and reverence for the human form. Michelangelo's enduring influence continues to inspire generations of artists, showcasing the heights that human creativity can reach.</p>
+								<p>Michelangelo's passion for his craft was unparalleled, evident in the way he tirelessly honed his skills and pushed the boundaries of what was thought possible. Whether sculpting marble or creating timeless frescoes, he poured his heart and soul into every piece. His ability to capture the essence of human emotion and divine beauty in his works remains awe-inspiring, inviting admiration and study by artists and art enthusiasts for centuries.</p>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="card">
+					<div class="card__container card__container--closed">
+						<svg class="card__image" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 1920 500" preserveAspectRatio="xMidYMid slice">
+							<defs>
+								<clipPath id="clipPath5">
+									<!-- r = 992 = hyp = Math.sqrt(960*960+250*250) -->
+									<circle class="clip" cx="960" cy="250" r="992"></circle>
+								</clipPath>
+							</defs>
+							<image clip-path="url(#clipPath5)" width="1920" height="500" xlink:href="https://www.worldhistory.org/img/c/p/1200x627/15594.png"></image>
+						</svg>
+						<div class="card__content">
+							<i class="card__btn-close fa fa-times"></i>
+							<div class="card__caption">
+								<h2 class="card__title">Claude Monet</h2>
+
+							</div>
+							<div class="card__copy">
+								<div class="meta">
+									<img class="meta__avatar" src="https://tympanus.net/Development/CardExpansion/img/authors/5.png" alt="author05" />
+									<span class="meta__author">	Claude Monet</span>
+									
+								</div>
+								<p>Monet's artistic style emphasized loose brushwork, using light and color to create a sense of atmosphere and the fleeting effects of a particular moment. He often painted the same subject at different times of the day to capture these changing effects, showcasing his dedication to capturing the essence of a scene. Monet's impact on art goes beyond the Impressionist movement, influencing subsequent generations of artists and shaping the way we perceive the world through the lens of color and light.</p>
+								<p>Monet's love for nature and his passion for painting en plein air (outdoors) set him apart as a visionary artist. He had a keen eye for subtle variations in color and light, which he skillfully translated onto canvas, bringing scenes to life with vivid brushstrokes. Monet's dedication to exploring the interplay of color and light on the natural world continues to inspire artists, captivating viewers and instilling a sense of tranquility and wonder.</p>
+								<p>Monet's exploration of light and color was revolutionary, and his techniques evolved throughout his career, leading to a diverse body of work. His commitment to capturing the ephemeral qualities of light and its effects on the world around him laid the foundation for Impressionism, a movement that defied traditional artistic conventions. Monet's legacy lives on, influencing artists to embrace innovation and to view the world through the lens of artistry.</p>
+								<p>Stock infrastructure seed round sales paradigm shift technology user experience focus gamification. Partnership metrics business plan stealth business-to-business. Deployment graphical user interface monetization. Twitter incubator scrum project entrepreneur branding burn rate ramen backing paradigm shift virality crowdsource.</p>
+								<p>Monet's artistic journey was one of dedication and passion, with a focus on expressing his emotional response to nature. He believed in capturing the essence of a moment rather than replicating reality, using his brushstrokes to convey the fleeting beauty of the scenes he painted. This dedication to artistic freedom and expression solidified Monet's place as a leading figure in the Imp
+								<p>Monet's commitment to his craft was unwavering, and he often pushed the boundaries of traditional art, embracing experimentation and innovation. He constantly sought to capture
+									</div>
+						</div>
+					</div>
+				</div>
+
+
+
+				<div class="card">
+					<div class="card__container card__container--closed">
+						<svg class="card__image" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 1920 500" preserveAspectRatio="xMidYMid slice">
+							<defs>
+								<clipPath id="clipPath5">
+									<!-- r = 992 = hyp = Math.sqrt(960*960+250*250) -->
+									<circle class="clip" cx="960" cy="250" r="992"></circle>
+								</clipPath>
+							</defs>
+							<image clip-path="url(#clipPath5)" width="1920" height="500" xlink:href="https://www.worldhistory.org/img/c/p/1200x627/15594.png"></image>
+						</svg>
+						<div class="card__content">
+							<i class="card__btn-close fa fa-times"></i>
+							<div class="card__caption">
+								<h2 class="card__title">Claude Monet</h2>
+
+							</div>
+							<div class="card__copy">
+								<div class="meta">
+									<img class="meta__avatar" src="https://tympanus.net/Development/CardExpansion/img/authors/5.png" alt="author05" />
+									<span class="meta__author">	Claude Monet</span>
+									
+								</div>
+								<p>Monet's artistic style emphasized loose brushwork, using light and color to create a sense of atmosphere and the fleeting effects of a particular moment. He often painted the same subject at different times of the day to capture these changing effects, showcasing his dedication to capturing the essence of a scene. Monet's impact on art goes beyond the Impressionist movement, influencing subsequent generations of artists and shaping the way we perceive the world through the lens of color and light.</p>
+								<p>Monet's love for nature and his passion for painting en plein air (outdoors) set him apart as a visionary artist. He had a keen eye for subtle variations in color and light, which he skillfully translated onto canvas, bringing scenes to life with vivid brushstrokes. Monet's dedication to exploring the interplay of color and light on the natural world continues to inspire artists, captivating viewers and instilling a sense of tranquility and wonder.</p>
+								<p>Monet's exploration of light and color was revolutionary, and his techniques evolved throughout his career, leading to a diverse body of work. His commitment to capturing the ephemeral qualities of light and its effects on the world around him laid the foundation for Impressionism, a movement that defied traditional artistic conventions. Monet's legacy lives on, influencing artists to embrace innovation and to view the world through the lens of artistry.</p>
+								<p>Stock infrastructure seed round sales paradigm shift technology user experience focus gamification. Partnership metrics business plan stealth business-to-business. Deployment graphical user interface monetization. Twitter incubator scrum project entrepreneur branding burn rate ramen backing paradigm shift virality crowdsource.</p>
+								<p>Monet's artistic journey was one of dedication and passion, with a focus on expressing his emotional response to nature. He believed in capturing the essence of a moment rather than replicating reality, using his brushstrokes to convey the fleeting beauty of the scenes he painted. This dedication to artistic freedom and expression solidified Monet's place as a leading figure in the Imp
+								<p>Monet's commitment to his craft was unwavering, and he often pushed the boundaries of traditional art, embracing experimentation and innovation. He constantly sought to capture
+									</div>
+						</div>
+					</div>
+				</div>
+			
+
+			<!-- /cards -->
+  
+  
+
+		</div><!-- /content -->
+<!-- partial -->
+  <script src='https://tympanus.net/Development/CardExpansion/js/vendors/trianglify.min.js'></script>
+<script src='https://tympanus.net/Development/CardExpansion/js/vendors/TweenMax.min.js'></script>
+<script src='https://tympanus.net/Development/CardExpansion/js/vendors/ScrollToPlugin.min.js'></script>
+<script src='https://tympanus.net/Development/CardExpansion/js/vendors/cash.min.js'></script>
+<script src='https://tympanus.net/Development/CardExpansion/js/Card-circle.js'></script><script  src="./script.js"></script>
+<script>
+	var demo = (function(window, undefined) {
+
+/**
+ * Enum of CSS selectors.
+ */
+var SELECTORS = {
+  pattern: '.pattern',
+  card: '.card',
+  cardImage: '.card__image',
+  cardClose: '.card__btn-close',
+};
+
+/**
+ * Enum of CSS classes.
+ */
+var CLASSES = {
+  patternHidden: 'pattern--hidden',
+  polygon: 'polygon',
+  polygonHidden: 'polygon--hidden'
+};
+
+/**
+ * Map of svg paths and points.
+ */
+var polygonMap = {
+  paths: null,
+  points: null
+};
+
+/**
+ * Container of Card instances.
+ */
+var layout = {};
+
+/**
+ * Initialise demo.
+ */
+function init() {
+
+  // For options see: https://github.com/qrohlf/Trianglify
+  var pattern = Trianglify({
+	width: window.innerWidth,
+	height: window.innerHeight,
+	cell_size: 90,
+	variance: 1,
+	stroke_width: 0.6,
+	color_function : function(x, y) {
+	  return '#de6551';
+	}
+  }).svg(); // Render as SVG.
+
+  _mapPolygons(pattern);
+
+  _bindCards();
+};
+
+/**
+ * Store path elements, map coordinates and sizes.
+ * @param {Element} pattern The SVG Element generated with Trianglify.
+ * @private
+ */
+function _mapPolygons(pattern) {
+
+  // Append SVG to pattern container.
+  $(SELECTORS.pattern).append(pattern);
+
+  // Convert nodelist to array,
+  // Used `.childNodes` because IE doesn't support `.children` on SVG.
+  polygonMap.paths = [].slice.call(pattern.childNodes);
+
+  polygonMap.points = [];
+
+  polygonMap.paths.forEach(function(polygon) {
+
+	// Hide polygons by adding CSS classes to each svg path (used attrs because of IE).
+	$(polygon).attr('class', CLASSES.polygon + ' ' + CLASSES.polygonHidden);
+
+	var rect = polygon.getBoundingClientRect();
+
+	var point = {
+	  x: rect.left + rect.width / 2,
+	  y: rect.top + rect.height / 2
+	};
+
+	polygonMap.points.push(point);
+  });
+
+  // All polygons are hidden now, display the pattern container.
+  $(SELECTORS.pattern).removeClass(CLASSES.patternHidden);
+};
+
+/**
+ * Bind Card elements.
+ * @private
+ */
+function _bindCards() {
+
+  var elements = $(SELECTORS.card);
+
+  $.each(elements, function(card, i) {
+
+	var instance = new Card(i, card);
+
+	layout[i] = {
+	  card: instance
+	};
+
+	var cardImage = $(card).find(SELECTORS.cardImage);
+	var cardClose = $(card).find(SELECTORS.cardClose);
+
+	$(cardImage).on('click', _playSequence.bind(this, true, i));
+	$(cardClose).on('click', _playSequence.bind(this, false, i));
+  });
+};
+
+/**
+ * Create a sequence for the open or close animation and play.
+ * @param {boolean} isOpenClick Flag to detect when it's a click to open.
+ * @param {number} id The id of the clicked card.
+ * @param {Event} e The event object.
+ * @private
+ *
+ */
+function _playSequence(isOpenClick, id, e) {
+
+  var card = layout[id].card;
+
+  // Prevent when card already open and user click on image.
+  if (card.isOpen && isOpenClick) return;
+
+  // Create timeline for the whole sequence.
+  var sequence = new TimelineLite({paused: true});
+
+  var tweenOtherCards = _showHideOtherCards(id);
+
+  if (!card.isOpen) {
+	// Open sequence.
+
+	sequence.add(tweenOtherCards);
+	sequence.add(card.openCard(_onCardMove), 0);
+
+  } else {
+	// Close sequence.
+
+	var closeCard = card.closeCard();
+	var position = closeCard.duration() * 0.8; // 80% of close card tween.
+
+	sequence.add(closeCard);
+	sequence.add(tweenOtherCards, position);
+  }
+
+  sequence.play();
+};
+
+/**
+ * Show/Hide all other cards.
+ * @param {number} id The id of the clcked card to be avoided.
+ * @private
+ */
+function _showHideOtherCards(id) {
+
+  var TL = new TimelineLite;
+
+  var selectedCard = layout[id].card;
+
+  for (var i in layout) {
+
+	var card = layout[i].card;
+
+	// When called with `openCard`.
+	if (card.id !== id && !selectedCard.isOpen) {
+	  TL.add(card.hideCard(), 0);
+	}
+
+	// When called with `closeCard`.
+	if (card.id !== id && selectedCard.isOpen) {
+	  TL.add(card.showCard(), 0);
+	}
+  }
+
+  return TL;
+};
+
+/**
+ * Callback to be executed on Tween update, whatever a polygon
+ * falls into a circular area defined by the card width the path's
+ * CSS class will change accordingly.
+ * @param {Object} track The card sizes and position during the floating.
+ * @private
+ */
+function _onCardMove(track) {
+
+  var radius = track.width / 2;
+
+  var center = {
+	x: track.x,
+	y: track.y
+  };
+
+  polygonMap.points.forEach(function(point, i) {
+
+	if (_detectPointInCircle(point, radius, center)) {
+	  $(polygonMap.paths[i]).attr('class', CLASSES.polygon);
+	} else {
+	  $(polygonMap.paths[i]).attr('class', CLASSES.polygon + ' ' + CLASSES.polygonHidden);
+	}
+  });
+}
+
+/**
+ * Detect if a point is inside a circle area.
+ * @private
+ */
+function _detectPointInCircle(point, radius, center) {
+
+  var xp = point.x;
+  var yp = point.y;
+
+  var xc = center.x;
+  var yc = center.y;
+
+  var d = radius * radius;
+
+  var isInside = Math.pow(xp - xc, 2) + Math.pow(yp - yc, 2) <= d;
+
+  return isInside;
+};
+
+// Expose methods.
+return {
+  init: init
+};
+
+})(window);
+
+// Kickstart Demo.
+window.onload = demo.init;
+</script>
+</body>
+</html>

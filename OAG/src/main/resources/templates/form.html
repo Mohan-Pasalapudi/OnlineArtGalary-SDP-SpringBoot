@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Form Example</title>
+</head>
+<style>
+
+/* Style for the registration form and overlay */
+.modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 1;
+  overflow: auto;
+}
+
+.modal-content {
+  position: relative;
+  margin: 15% auto;
+  padding: 20px;
+  background: #fff;
+  border-radius: 5px;
+  max-width: 300px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  text-align: center;
+}
+
+.close {
+  position: absolute;
+  top: 5px;
+  right: 10px;
+  cursor: pointer;
+  font-size: 20px;
+  font-weight: bold;
+  color: #555;
+}
+
+/* Style for the confirmation buttons */
+.btn {
+  display: inline-block;
+  padding: 10px 20px;
+  margin: 10px;
+  background: #3498db;
+  color: #fff;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.btn:hover {
+  background: #2980b9;
+}
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: Futura;
+  outline: none;
+}
+
+body {
+  font-family: Futura;
+  background: #CDE8D5;
+}
+
+.main-form:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+.main-form {
+  max-width: 300px;
+  margin: 40px auto;
+  padding: 20px;
+  border-radius: 10px;
+  background: white;
+  box-shadow: 10px 10px 0 rgba(0, 0, 0, 0.1);
+}
+.main-form__title {
+  padding: 20px 0;
+  text-align: center;
+}
+.main-form__title h1 {
+  position: relative;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  margin-bottom: 25px;
+}
+.main-form__title h1:after {
+  position: absolute;
+  bottom: -13px;
+  left: 0;
+  right: 0;
+  margin: auto;
+  width: 40px;
+  height: 4px;
+  background: #f2f2f2;
+  content: "";
+}
+.main-form__input {
+  display: block;
+  width: 100%;
+  border: 0;
+  background: #fcfcfc;
+  border-radius: 6px;
+  padding: 15px;
+  margin-bottom: 10px;
+  outline: 0;
+  font-size: 0.7rem;
+  color: #666666;
+  -webkit-transition: all 0.2s ease-in-out;
+  -moz-transition: all 0.2s ease-in-out;
+  -ms-transition: all 0.2s ease-in-out;
+  -o-transition: all 0.2s ease-in-out;
+  transition: all 0.2s ease-in-out;
+}
+.main-form__input:focus {
+  background: #f7f7f7;
+}
+.main-form__body .btn {
+  display: block;
+  width: 48%;
+  margin-top: 10px;
+  float: left;
+  background: #e6e6e6;
+  padding: 15px;
+  border: 0;
+  font-size: 0.6rem;
+  color: #999999;
+  cursor: pointer;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  -webkit-transition: all 0.2s ease-in-out;
+  -moz-transition: all 0.2s ease-in-out;
+  -ms-transition: all 0.2s ease-in-out;
+  -o-transition: all 0.2s ease-in-out;
+  transition: all 0.2s ease-in-out;
+}
+.main-form__body .btn:last-of-type {
+  float: right;
+  background: #FCA44B;
+  color: #fff;
+}
+.main-form__body .btn:last-of-type:hover {
+  background: #fb8b19;
+}
+
+::-webkit-input-placeholder {
+  color: #cccccc;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+:-moz-placeholder {
+  color: #cccccc;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+::-moz-placeholder {
+  color: #cccccc;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+:-ms-input-placeholder {
+  color: #cccccc;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+</style>
+<body>
+    <form class="main-form first" id="registration-form" action="/save" th:object="${stud2}" method="post">
+        <div class="main-form__title">
+            <h1>Sign-up</h1>
+        </div>
+        <div class="main-form__body">
+            <input class="main-form__input" type="text" id="id" name="id" placeholder="ID"/>
+            <input class="main-form__input" type="text" id="firstname" name="firstname" placeholder="FN" />
+            <input class="main-form__input" type="text" id="email" name="email" placeholder="email" />
+            <input class="main-form__input" type="password" id="password" name="password" placeholder="password" />
+            <button class="btn" type="reset">Clear</button>
+            <button class="btn" type="button" onclick="showConfirmation()">Register</button>
+        </div>
+    </form>
+
+    <!-- Add the confirmation modal initially hidden -->
+    <div id="confirmation-modal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <p>Are you sure you want to Mail Notification?</p>
+            <button class="btn" onclick="submitForm()">Yes, Send Mail</button>
+            <button class="btn" onclick="submitForm1()">Cancel</button>
+        </div>
+    </div>
+
+    <!-- Other content or scripts here -->
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+    <script>
+        function showConfirmation() {
+            var modal = document.getElementById("confirmation-modal");
+            modal.style.display = "block";
+        }
+
+        setTimeout(function() {
+            confirmButton.textContent = "Confirmation Mail Sent";
+        }, 2000);
+        
+        
+   function submitForm() {
+            // Redirect to the desired URL
+            window.location.href = "/email/send"; // Replace "/other-url" with the URL you want to redirect to
+        }
+   function submitForm1() {
+       var form = document.getElementById("registration-form");
+       form.submit(); // This will submit the form to /save
+   }
+     /*   function submitForm() {
+        	  // Save the data from the form
+        	  // ...
+
+        	  // Open a pop-up window
+        	 
+
+        	  // Redirect the main window to /save
+        	  window.location.href = "/save";
+        	  var popup = window.open("/email/send", "_blank", "width=400,height=300");
+
+        	  // Focus the pop-up window
+        	  popup.focus();
+        	}
+*/
+
+    </script>
+</body>
+</html>
